@@ -17,22 +17,6 @@
 #
 class postfix {
 
-  # selinux labels differ from one distribution to another
-  case $operatingsystem {
-
-    RedHat, CentOS: {
-      case $lsbmajdistrelease {
-        "4":     { $postfix_seltype = "etc_t" }
-        "5","6": { $postfix_seltype = "postfix_etc_t" }
-        default: { $postfix_seltype = undef }
-      }
-    }
-
-    default: {
-      $postfix_seltype = undef
-    }
-  }
-
   # Default value for various options
   case $postfix_smtp_listen {
     "": { $postfix_smtp_listen = "127.0.0.1" }
@@ -81,7 +65,6 @@ class postfix {
   file { "/etc/mailname":
     ensure  => present,
     content => "${fqdn}\n",
-    seltype => $postfix_seltype,
   }
 
   # Aliases
@@ -89,7 +72,6 @@ class postfix {
     ensure => present,
     content => "# file managed by puppet\n",
     replace => false,
-    seltype => $postfix_seltype,
     notify => Exec["newaliases"],
   }
 
@@ -111,7 +93,6 @@ class postfix {
       /RedHat|CentOS/ => template("postfix/master.cf.redhat.erb", "postfix/master.cf.common.erb"),
       /Debian|Ubuntu|kFreeBSD/ => template("postfix/master.cf.debian.erb", "postfix/master.cf.common.erb"),
     },
-    seltype => $postfix_seltype,
     notify  => Service["postfix"],
     require => Package["postfix"],
   }
@@ -124,7 +105,6 @@ class postfix {
     mode => "0644",
     source  => "puppet:///modules/postfix/main.cf",
     replace => false,
-    seltype => $postfix_seltype,
     notify  => Service["postfix"],
     require => Package["postfix"],
   }
