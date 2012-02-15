@@ -62,11 +62,6 @@ class postfix {
     require   => Package["postfix"],
   }
 
-  file { "/etc/mailname":
-    ensure  => present,
-    content => "${fqdn}\n",
-  }
-
   # Aliases
   file { "/etc/aliases":
     ensure => present,
