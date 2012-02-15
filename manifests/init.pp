@@ -47,10 +47,7 @@ class postfix {
 
   package { "mailx":
     ensure => installed,
-    name   => $lsbdistcodename ? {
-      "squeeze" => "bsd-mailx",
-      "lucid"   => "bsd-mailx",
-      default   => "mailx",
+    name   => "mailx",
     },
   }
 
@@ -84,10 +81,7 @@ class postfix {
     owner => "root",
     group => "root",
     mode => "0644",
-    content => $operatingsystem ? {
-      /RedHat|CentOS/ => template("postfix/master.cf.redhat.erb", "postfix/master.cf.common.erb"),
-      /Debian|Ubuntu|kFreeBSD/ => template("postfix/master.cf.debian.erb", "postfix/master.cf.common.erb"),
-    },
+    source => "puppet:///modules/postfix/master.cf",
     notify  => Service["postfix"],
     require => Package["postfix"],
   }
@@ -111,15 +105,11 @@ class postfix {
     "inet_interfaces": value => "all";
   }
 
-  case $operatingsystem {
-    RedHat, CentOS: {
-      postfix::config {
-        "sendmail_path": value => "/usr/sbin/sendmail.postfix";
-        "newaliases_path": value => "/usr/bin/newaliases.postfix";
-        "mailq_path": value => "/usr/bin/mailq.postfix";
-      }
-    }
-  }
+	postfix::config {
+		"sendmail_path": value => "/usr/sbin/sendmail";
+		"newaliases_path": value => "/usr/bin/newaliases";
+		"mailq_path": value => "/usr/bin/mailq";
+	}
 
   mailalias {"root":
     recipient => $root_mail_recipient,
