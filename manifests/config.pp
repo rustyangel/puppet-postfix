@@ -27,13 +27,23 @@ Example usage:
   }
 
 */
-define postfix::config ($ensure = present, $value) {
+define postfix::config ($ensure = present, $multi = false, $instance_group = "mta", $value) {
 
   case $ensure {
     present: {
-      exec { "postconf -e ${name}='${value}'":
-        unless => "test \"x$(postconf -h ${name})\" = 'x${value}'"
-      }
+      if $multi {
+        # ATTN!
+        # We assume the whole group has the same config. Otherwise either unless
+        # block becomes bloated or we have to run postconf EACH TIME we have puppet
+        # executing it's stuff
+        exec { "postmulti -g ${instance_group} -x postconf -e ${name}='${value}'":
+          unless => "test \"x$(postmulti -g ${instance_group} -x postconf -h ${name}) | head -n 1\" = 'x${value}'"
+        }
+      } else {
+          exec { "postconf -e ${name}='${value}'":
+            unless => "test \"x$(postconf -h ${name})\" = 'x${value}'"
+          }
+        }
     }
 
     absent: {
@@ -41,4 +51,4 @@ define postfix::config ($ensure = present, $value) {
     }
   }
 }
-# vim: set ts=2 sw=2 cin et
+#vim: set ts=2 sw=2 cin et
