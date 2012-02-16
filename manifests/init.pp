@@ -48,8 +48,7 @@ class postfix {
   package { "mailx":
     ensure => installed,
     name   => "mailx",
-    },
-  }
+    }
 
   service { "postfix":
     ensure    => running,
