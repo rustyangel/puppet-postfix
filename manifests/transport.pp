@@ -42,3 +42,4 @@ define postfix::transport ($ensure="present", $destination) {
     require => Package["postfix"],
   }
 }
+# vim: set ts=2 sw=2 cin et

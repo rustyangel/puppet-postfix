@@ -41,3 +41,4 @@ define postfix::config ($ensure = present, $value) {
     }
   }
 }
+# vim: set ts=2 sw=2 cin et

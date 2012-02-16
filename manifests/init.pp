@@ -116,3 +116,4 @@ class postfix {
     notify    => Exec["newaliases"],
   }
 }
+# vim: set ts=2 sw=2 cin et

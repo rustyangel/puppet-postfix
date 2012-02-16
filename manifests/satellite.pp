@@ -36,3 +36,4 @@ class postfix::satellite {
     destination => "root",
   }
 }
+# vim: set ts=2 sw=2 cin et

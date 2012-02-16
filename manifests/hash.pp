@@ -66,3 +66,4 @@ define postfix::hash ($ensure="present", $source = false) {
     require => Package["postfix"],
   }
 }
+# vim: set ts=2 sw=2 cin et
