@@ -18,28 +18,9 @@
 class postfix {
 
   # Default value for various options
-  case $postfix_smtp_listen {
-    "": { $postfix_smtp_listen = "127.0.0.1" }
-  }
   case $root_mail_recipient {
     "":   { $root_mail_recipient = "nobody" }
   }
-  case $postfix_use_amavisd {
-    "": { $postfix_use_amavisd = "no" }
-  }
-  case $postfix_use_dovecot_lda {
-    "": { $postfix_use_dovecot_lda = "no" }
-  }
-  case $postfix_use_schleuder {
-    "": { $postfix_use_schleuder = "no" }
-  }
-  case $postfix_use_sympa {
-    "": { $postfix_use_sympa = "no" }
-  }
-  case $postfix_mail_user {
-    "": { $postfix_mail_user = "vmail" }
-  }
-
 
   package { "postfix":
     ensure => installed
@@ -101,7 +82,7 @@ class postfix {
   postfix::config {
     "myorigin":   value => "${fqdn}";
     "alias_maps": value => "hash:/etc/aliases";
-    "inet_interfaces": value => "all";
+    "inet_interfaces": value => "127.0.0.1";
   }
 
 	postfix::config {
