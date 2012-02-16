@@ -29,23 +29,15 @@ Example usage:
 */
 define postfix::config ($ensure = present, $value) {
 
-  Augeas {
-    context => "/files/etc/postfix/main.cf",
-    notify  => Service["postfix"],
-    require => File["/etc/postfix/main.cf"],
-  }
-
   case $ensure {
     present: {
-      augeas { "set postfix '${name}' to '${value}'":
-        changes => "set $name $value",
+      exec { "postconf -e ${name}='${value}'":
+        unless => "test \"x$(postconf -h ${name})\" = 'x${value}'"
       }
     }
 
     absent: {
-      augeas { "rm postfix '${name}'":
-        changes => "rm $name",
-      }
+      fail "postfix::config ensure => absent: Not implemented"
     }
   }
 }
